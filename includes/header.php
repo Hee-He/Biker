@@ -24,7 +24,7 @@ if (session_status() === PHP_SESSION_NONE) {
                         <?php echo $_SESSION["username"]; ?>
                     </a>
                     <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#">Profile Update</a>
+                        <a class="dropdown-item" href="profile.php">Profile Update</a>
                         <a class="dropdown-item" href="update-password.php">Password</a>
                         <a class="dropdown-item" href="my-booking.php">My Booking</a>
                         <div class="dropdown-divider"></div>

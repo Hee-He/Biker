@@ -12,6 +12,14 @@ $toDate = '';
 $message = '';
 $uploadDir = 'img/'; // Directory where uploaded files will be saved
 
+// Checking whether the profile is fully setup or not
+$sql = "SELECT dob, Address, City, Country
+FROM `bikerental`.`tblusers`";
+$stmt = $conn->prepare($sql);
+$stmt->execute();
+$result = $stmt->get_result();
+$row = $result->fetch_assoc();
+
 // Handle form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['bike_id'])) {
     session_start(); // Start or resume session
