@@ -6,6 +6,11 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+// Fetch brand names from tblbrands
+$sql_brands = "SELECT id, brandName FROM tblbrands";
+$result_brands = $conn->query($sql_brands);
+
+
 // Initialize variables for booking form
 $fromDate = '';
 $toDate = '';
@@ -21,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['bike_id'])) {
     $loggedInUser = $_SESSION['username'];
     
     // Checking whether the profile is fully setup or not
-    $sql = "SELECT dob, Address, City, Country FROM `bikerental`.`tblusers` WHERE FullName=?";
+    $sql = "SELECT dob, Address FROM `bikerental`.`tblusers` WHERE FullName=?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param('s', $loggedInUser);
     $stmt->execute();
@@ -35,13 +40,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['bike_id'])) {
     if (!isset($_SESSION['user_id'])) {
         // Show login modal if not logged in
         echo "<script>document.getElementById('loginModal').style.display = 'block';</script>";
-    } elseif ($row['dob'] === NULL && $row['Address'] === NULL && $row['City'] === NULL && $row['Country'] === NULL) {
-        echo '<div>';
-        echo '<span>&times;</span>';
-        echo '<span>Setup Your Profile!</span><br>';
-        echo '<a href="profile.php">Setup</a>';
-        echo '</div>';
-    } else {
+    } 
+    // elseif ($row['dob'] === NULL && $row['Address'] === NULL) {
+    //     echo '<div>';
+    //     echo '<span>&times;</span>';
+    //     echo '<span>Setup Your Profile!</span><br>';
+    //     echo '<a href="profile.php">Setup</a>';
+    //     echo '</div>';
+    // } 
+    else {
         $bikeId = $_POST['bike_id'];
         $userId = $_SESSION['user_id'];
 
@@ -54,30 +61,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['bike_id'])) {
         $message = $_POST['message'] ?? '';
 
         // Handle file upload
-        if (isset($_FILES['license_photo'])) {
-            $file = $_FILES['license_photo'];
-            $fileName = $file['name'];
-            $fileTmpName = $file['tmp_name'];
-            $fileSize = $file['size'];
-            $fileError = $file['error'];
-            $fileType = $file['type'];
-
-            $fileExt = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-            $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
-
-            if (in_array($fileExt, $allowedExtensions)) {
-                if ($fileError === 0) {
-                    $newFileName = uniqid('', true) . "." . $fileExt;
-                    $uploadPath = $uploadDir . $newFileName;
-
-                    if (move_uploaded_file($fileTmpName, $uploadPath)) {
+        
                         // Prepare SQL statement
-                        $stmt = $conn->prepare("INSERT INTO tblbooking (userEmail, VehicleId, FromDate, ToDate, message, LicensePhoto, Status, PostingDate) VALUES (?, ?, ?, ?, ?, ?, -1, NOW())");
-                        $stmt->bind_param("iissss", $userId, $bikeId, $fromDate, $toDate, $message, $newFileName);
+                        $stmt = $conn->prepare("INSERT INTO tblbooking (userEmail, VehicleId, FromDate, ToDate, message, Status, PostingDate) VALUES (?, ?, ?, ?, ?, -1, NOW())");
+                        $stmt->bind_param("iisss", $userId, $bikeId, $fromDate, $toDate, $message);
 
                         // Execute SQL statement
                         if ($stmt->execute()) {
                             echo "<script>alert('Booking successful!');</script>";
+                            header("Location: " . $_SERVER['PHP_SELF'] ."?id=$bikeId");
+                            exit();
                             // Optionally redirect after successful booking
                             // header("Location: bike-details.php?id=$bikeId");
                             // exit;
@@ -86,20 +79,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['bike_id'])) {
                         }
 
                         $stmt->close();
-                    } else {
-                        echo "<script>alert('Error uploading file.');</script>";
-                    }
-                } else {
-                    echo "<script>alert('Error: " . $fileError . "');</script>";
-                }
-            } else {
-                echo "<script>alert('File type not allowed.');</script>";
-            }
-        } else {
-            echo "<script>alert('Please select a file.');</script>";
-        }
+                    } 
     }
-}
 
 // Fetch bike details if bike ID is provided in the URL
 if (isset($_GET['id'])) {
@@ -270,8 +251,19 @@ $conn->close();
                 <h1><?php echo $bikeTitle; ?> Details</h1>
                 <div class="bike">
                     <!-- Display bike details as needed -->
+                     <?php
+                     // Find the corresponding brand name for this vehicle
+                        $brandName = "";
+                        $result_brands->data_seek(0); // Reset result pointer to the beginning
+                        while ($brand = $result_brands->fetch_assoc()) {
+                            if ($row["VehiclesBrand"] == $brand["id"]) {
+                                $brandName = $brand["brandName"];
+                                break;
+                            }
+                        }
+                    ?>
                     <h2><?php echo $bikeTitle; ?></h2>
-                    <p><strong>Brand:</strong> <?php echo $bikeBrand; ?></p>
+                    <p><strong>Brand:</strong> <?php echo $brandName; ?></p>
                     <p><strong>Price per Day:</strong> Rs. <?php echo $pricePerDay; ?></p>
                     <p><strong>Fuel Type:</strong> <?php echo $fuelType; ?></p>
                     <p><strong>Model Year:</strong> <?php echo $modelYear; ?></p>
@@ -290,7 +282,7 @@ $conn->close();
                     </div>
                 </div>
             </div>
-
+            
             <!-- Booking Form -->
             <div class="booking-form">
                 <form method="post" action="" enctype="multipart/form-data">
@@ -299,8 +291,7 @@ $conn->close();
                     <input type="date" id="from_date" name="from_date" value="<?php echo $fromDate; ?>" required><br><br>
                     <label for="to_date">To Date:</label>
                     <input type="date" id="to_date" name="to_date" value="<?php echo $toDate; ?>" required><br><br>
-                    <label for="license_photo">License Photo:</label>
-                    <input type="file" id="license_photo" name="license_photo" accept="image/*" required><br><br>
+                    
                     <label for="message">Message:</label><br>
                     <textarea id="message" name="message" rows="4" cols="50"><?php echo $message; ?></textarea><br><br>
                     <?php if (isset($_SESSION['user_id'])): ?>
