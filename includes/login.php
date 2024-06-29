@@ -9,30 +9,37 @@ require("config.php");
 $loginError = '';
 
 // Check if the login form is submitted
-if(isset($_POST['login'])) {
+if (isset($_POST['login'])) {
     // Retrieve user inputs
     $email = $_POST['email'];
     $password = md5($_POST['password']); // Example hashing; consider more secure options
 
     // Query to check if the user exists in the database
-    $sql = "SELECT id, FullName FROM tblusers WHERE EmailId=? AND Password=?";
+    $sql = "SELECT id, FullName, Status FROM tblusers WHERE EmailId=? AND Password=?";
     $query = $conn->prepare($sql);
     $query->bind_param("ss", $email, $password);
 
     // Execute the query
     $query->execute();
     $result = $query->get_result();
+    $row = $result->fetch_assoc();
 
     // Check if a user was found with the provided credentials
     if ($result->num_rows == 1) {
-        // Start session and store user information
-        $row = $result->fetch_assoc();
-        $_SESSION['user_id'] = $row['id'];
-        $_SESSION['username'] = $row['FullName']; 
-        echo $_SERVER['REQUEST_URL'];
-        // Redirect back to the original page or a default page
-        header("Location: " . $_SERVER['REQUEST_URI']); 
-        exit();
+        if ($row['Status'] === 1) {
+            // Start session and store user information
+            session_regenerate_id();
+            $_SESSION['user_id'] = $row['id'];
+            $_SESSION['username'] = $row['FullName']; // Set the session variable for username
+
+            // Redirect back to the original page or a default page
+            header("Location: {$_SERVER['HTTP_REFERER']}");
+            exit();
+        } else {
+            // Redirect with a query parameter indicating the account is blocked
+            header("Location: index.php?blocked=true");
+            exit();
+        }
     } else {
         $loginError = "Invalid email or password";
     }
@@ -67,4 +74,11 @@ if(isset($_POST['login'])) {
         closeModal('loginModal');
         openModal('signupModal');
     });
+
+    // Check if the account is blocked
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('blocked') === 'true') {
+        alert("Your account is blocked by Admin!");
+        window.location.href="index.php";
+    }
 </script>
