@@ -61,6 +61,11 @@ $result = $conn->query($sql);
     <title>Manage Bookings</title>
     <link rel="stylesheet" href="assets/css/styles.css?v=7">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        p{
+            margin: 0 100px;
+        }
+    </style>
 </head>
 <body>
     <?php include("includes/header.php"); ?> <!-- Include admin header that manages session start -->

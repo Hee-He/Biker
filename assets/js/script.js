@@ -18,18 +18,18 @@ function showSlides(n, id) {
 function showSlidesAuto(id) {
     let i;
     let slides = document.getElementsByClassName(`mySlides-${id}`);
+    if (slides.length == 0) {
+        return;
+    }
     for (i = 0; i < slides.length; i++) {
         slides[i].style.display = "none";  
     }
     slideIndices[id]++;
     if (slideIndices[id] > slides.length) {slideIndices[id] = 1}
     slides[slideIndices[id]-1].style.display = "block";
-    setTimeout(() => showSlidesAuto(id), 5000); // Change image every 2 seconds
+    setTimeout(() => showSlidesAuto(id), 5000); // Change image every 5 seconds
 }
 
-// script.js
-
-// script.js
 
 // Function to open the modal
 function openModal() {

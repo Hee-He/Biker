@@ -272,7 +272,7 @@ body {
     margin-bottom: 6px;
 }
 
-.login-container input[type="email"],
+.login-container input[type="text"],
 .login-container input[type="password"]{
     width: calc(100% - 20px);
     padding: 10px;

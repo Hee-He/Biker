@@ -12,22 +12,35 @@ $toDate = '';
 $message = '';
 $uploadDir = 'img/'; // Directory where uploaded files will be saved
 
-// Checking whether the profile is fully setup or not
-$sql = "SELECT dob, Address, City, Country
-FROM `bikerental`.`tblusers`";
-$stmt = $conn->prepare($sql);
-$stmt->execute();
-$result = $stmt->get_result();
-$row = $result->fetch_assoc();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 // Handle form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['bike_id'])) {
-    session_start(); // Start or resume session
+    $loggedInUser = $_SESSION['username'];
+    
+    // Checking whether the profile is fully setup or not
+    $sql = "SELECT dob, Address, City, Country FROM `bikerental`.`tblusers` WHERE FullName=?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param('s', $loggedInUser);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    
+    // Debug: output fetched user data
+    echo "<script>console.log('User data: " . json_encode($row) . "');</script>";
 
     // Check if user is logged in
     if (!isset($_SESSION['user_id'])) {
         // Show login modal if not logged in
         echo "<script>document.getElementById('loginModal').style.display = 'block';</script>";
+    } elseif ($row['dob'] === NULL && $row['Address'] === NULL && $row['City'] === NULL && $row['Country'] === NULL) {
+        echo '<div>';
+        echo '<span>&times;</span>';
+        echo '<span>Setup Your Profile!</span><br>';
+        echo '<a href="profile.php">Setup</a>';
+        echo '</div>';
     } else {
         $bikeId = $_POST['bike_id'];
         $userId = $_SESSION['user_id'];
@@ -93,7 +106,7 @@ if (isset($_GET['id'])) {
     $bikeId = $_GET['id'];
 
     // Query to fetch bike details
-    $stmt = $conn->prepare("SELECT id, VehiclesTitle, VehiclesBrand, PricePerDay, FuelType, ModelYear, SeatingCapacity, Vimage1, Vimage2, Vimage3, Vimage4, Vimage5, BrakeAssist, AirConditioner, VehiclesOverview FROM tblvehicles WHERE id = ?");
+    $stmt = $conn->prepare("SELECT id, VehiclesTitle, VehiclesBrand, PricePerDay, FuelType, ModelYear, SeatingCapacity, Vimage1, Vimage2, Vimage3, Vimage4, Vimage5, VehiclesOverview FROM tblvehicles WHERE id = ?");
     $stmt->bind_param("i", $bikeId);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -107,8 +120,6 @@ if (isset($_GET['id'])) {
         $fuelType = $row["FuelType"];
         $modelYear = $row["ModelYear"];
         $seatingCapacity = $row["SeatingCapacity"];
-        $brakeAssist = $row["BrakeAssist"];
-        $airConditioner = $row["AirConditioner"];
         $bikeOverview = $row["VehiclesOverview"];
 
         // Collect image URLs
@@ -133,7 +144,6 @@ if (isset($_GET['id'])) {
 // Close connection
 $conn->close();
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -143,110 +153,110 @@ $conn->close();
     <link rel="stylesheet" href="assets/css/style.css?v=7">
     <style>
         /* General Styles */
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
-    margin: 0;
-    padding: 0;
-}
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
 
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-}
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
 
-/* Bike Details Section */
-.bike-details {
-    display: flex;
-    justify-content: space-between;
-    margin: 20px 0;
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
-    overflow: hidden;
-    min-height: 500px; /* Set a minimum height for consistent sizing */
-}
+        /* Bike Details Section */
+        .bike-details {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            overflow: hidden;
+            min-height: 500px; /* Set a minimum height for consistent sizing */
+        }
 
-.bike-details .bike {
-    flex: 1 1 auto;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-}
+        .bike-details .bike {
+            flex: 1 1 auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
 
-.bike-details .booking-form {
-    flex: 0 0 300px; /* Fixed width */
-    max-width: 300px; /* Fixed width */
-    padding: 20px;
-    background-color: #f0f0f0;
-    border-left: 1px solid #ccc;
-}
+        .bike-details .booking-form {
+            flex: 0 0 300px; /* Fixed width */
+            max-width: 300px; /* Fixed width */
+            padding: 20px;
+            background-color: #f0f0f0;
+            border-left: 1px solid #ccc;
+        }
 
-.bike-details h1,
-.bike-details h2 {
-    margin-top: 0;
-}
+        .bike-details h1,
+        .bike-details h2 {
+            margin-top: 0;
+        }
 
-.bike-details p {
-    margin: 10px 0;
-}
+        .bike-details p {
+            margin: 10px 0;
+        }
 
-.bike-details .bike-images {
-    margin-top: 20px;
-    display: flex;
-    justify-content: space-between;
-}
+        .bike-details .bike-images {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
 
-.bike-details .bike-images img {
-    max-width: 100%;
-    height: auto;
-}
+        .bike-details .bike-images img {
+            max-width: 100%;
+            height: auto;
+        }
 
-/* Fixed Height for Overview Section */
-.bike-details .bike-overview {
-    flex-grow: 1;
-    overflow-y: auto;
-    max-height: 200px; /* Adjust this height as needed */
-    margin-top: 20px;
-}
+        /* Fixed Height for Overview Section */
+        .bike-details .bike-overview {
+            flex-grow: 1;
+            overflow-y: auto;
+            max-height: 200px; /* Adjust this height as needed */
+            margin-top: 20px;
+        }
 
-/* Booking Form Styles */
-.booking-form label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 5px;
-}
+        /* Booking Form Styles */
+        .booking-form label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
 
-.booking-form input[type="date"],
-.booking-form textarea {
-    width: 80%;
-    padding: 8px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    box-sizing: border-box;
-    font-size: 14px;
-}
+        .booking-form input[type="date"],
+        .booking-form textarea {
+            width: 80%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
 
-.booking-form textarea {
-    resize: vertical;
-}
+        .booking-form textarea {
+            resize: vertical;
+        }
 
-.booking-form .book-now-btn {
-    width: 80%;
-    padding: 10px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
-    font-size: 16px;
-}
+        .booking-form .book-now-btn {
+            width: 80%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 16px;
+        }
 
-.booking-form .book-now-btn:hover {
-    background-color: #45a049;
-}
+        .booking-form .book-now-btn:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
 <body>
@@ -262,13 +272,11 @@ body {
                     <!-- Display bike details as needed -->
                     <h2><?php echo $bikeTitle; ?></h2>
                     <p><strong>Brand:</strong> <?php echo $bikeBrand; ?></p>
-                    <p><strong>Price per Day:</strong> $<?php echo $pricePerDay; ?></p>
+                    <p><strong>Price per Day:</strong> Rs. <?php echo $pricePerDay; ?></p>
                     <p><strong>Fuel Type:</strong> <?php echo $fuelType; ?></p>
                     <p><strong>Model Year:</strong> <?php echo $modelYear; ?></p>
                     <p><strong>Seating Capacity:</strong> <?php echo $seatingCapacity; ?></p>
-                    <p><strong>Brake Assist:</strong> <?php echo $brakeAssist ? "Yes" : "No"; ?></p>
-                    <p><strong>Air Conditioner:</strong> <?php echo $airConditioner ? "Yes" : "No"; ?></p>
-
+                    
                     <!-- Display bike images -->
                     <div class="bike-images">
                         <?php foreach ($imageUrls as $imageUrl): ?>
@@ -329,6 +337,10 @@ body {
                 closeModal('loginModal');
             }
         }
+    
+
+        
+
     </script>
 </body>
 </html>

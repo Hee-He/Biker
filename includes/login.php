@@ -28,10 +28,10 @@ if(isset($_POST['login'])) {
         // Start session and store user information
         $row = $result->fetch_assoc();
         $_SESSION['user_id'] = $row['id'];
-        $_SESSION['username'] = $row['FullName']; // Set the session variable for username
-
+        $_SESSION['username'] = $row['FullName']; 
+        echo $_SERVER['REQUEST_URL'];
         // Redirect back to the original page or a default page
-        header("Location: {$_SERVER['HTTP_REFERER']}");
+        header("Location: " . $_SERVER['REQUEST_URI']); 
         exit();
     } else {
         $loginError = "Invalid email or password";
@@ -43,8 +43,8 @@ if(isset($_POST['login'])) {
     <h2>Login</h2>
     <form method="post">
         <div class="form-group">
-            <label for="email">Email address:</label>
-            <input type="email" class="form-control" id="email" name="email" required>
+            <label for="email">Email or Phone:</label>
+            <input type="text" class="form-control" id="email" name="email" required>
         </div>
         <div class="form-group">
             <label for="password">Password:</label>

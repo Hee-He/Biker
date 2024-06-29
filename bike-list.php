@@ -35,7 +35,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['bike_id'])) {
 }
 
 // SQL query to fetch all bikes
-$sql = "SELECT id, VehiclesTitle, VehiclesBrand, PricePerDay, FuelType, ModelYear, SeatingCapacity, Vimage1, Vimage2, Vimage3, Vimage4, Vimage5, BrakeAssist, AirConditioner, VehiclesOverview FROM `bikerental`.`tblvehicles`";
+$sql = "SELECT id, VehiclesTitle, VehiclesBrand, PricePerDay, FuelType, ModelYear, SeatingCapacity, Vimage1, Vimage2, Vimage3, Vimage4, Vimage5, VehiclesOverview FROM `bikerental`.`tblvehicles`";
 $result = $conn->query($sql);
 
 // Close connection
@@ -61,12 +61,10 @@ $conn->close();
             echo "<div class='bike'>";
             echo "<h2>" . $row["VehiclesTitle"] . "</h2>";
             echo "<p><strong>Brand:</strong> " . $row["VehiclesBrand"] . "</p>";
-            echo "<p><strong>Price per Day:</strong> $" . $row["PricePerDay"] . "</p>";
+            echo "<p><strong>Price per Day:</strong> Rs. " . $row["PricePerDay"] . "</p>";
             echo "<p><strong>Fuel Type:</strong> " . $row["FuelType"] . "</p>";
             echo "<p><strong>Model Year:</strong> " . $row["ModelYear"] . "</p>";
             echo "<p><strong>Seating Capacity:</strong> " . $row["SeatingCapacity"] . "</p>";
-            echo "<p><strong>Brake Assist:</strong> " . ($row["BrakeAssist"] ? "Yes" : "No") . "</p>";
-            echo "<p><strong>Air Conditioner:</strong> " . ($row["AirConditioner"] ? "Yes" : "No") . "</p>";
 
             // Check for images and display slideshow
             $hasImages = false;
@@ -86,7 +84,6 @@ $conn->close();
             }
             echo "</div>";
 
-
             // View Details Link
             echo "<a href='bike-details.php?id=$id' class='view-details-btn'>View Details</a>";
 
@@ -97,8 +94,6 @@ $conn->close();
     }
     ?>
     </div>
-
-
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -146,6 +141,7 @@ $conn->close();
                 document.getElementById('bookingPopup').style.display = 'block';
             }
         }
+
         // Auto slideshow initialization
         document.addEventListener("DOMContentLoaded", function() {
             <?php
@@ -154,25 +150,16 @@ $conn->close();
                 die("Connection failed: " . $conn->connect_error);
             }
 
-            $sql = "SELECT id, VehiclesTitle, VehiclesBrand, PricePerDay, FuelType, ModelYear, SeatingCapacity, Vimage1, Vimage2, Vimage3, Vimage4, Vimage5, BrakeAssist, AirConditioner, VehiclesOverview FROM bikerental.tblvehicles";
+            $sql = "SELECT id FROM bikerental.tblvehicles";
             $result = $conn->query($sql);
 
             if ($result->num_rows > 0) {
                 $result->data_seek(0); // Reset result pointer to the beginning
                 while($row = $result->fetch_assoc()) {
                     $id = $row["id"];
+                    echo "console.log('Initializing slide for bike ID: ' + $id);";
                     echo "slideIndices[$id] = 0;";
-                    // Start auto slideshow only if there are images
-                    $hasImages = false;
-                    for ($i = 1; $i <= 5; $i++) {
-                        if (!empty($row["Vimage$i"])) {
-                            $hasImages = true;
-                            break;
-                        }
-                    }
-                    if ($hasImages) {
-                        echo "showSlidesAuto($id);";
-                    }
+                    echo "showSlidesAuto($id);";
                 }
             }
 

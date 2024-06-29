@@ -16,8 +16,8 @@ if (!isset($_SESSION['admin'])) {
             <li>
                 <a href="#" onclick="toggleMenu('brandsMenu')"><i class="fa fa-files-o"></i> Brands</a>
                 <ul id="brandsMenu" class="submenu">
-                    <li><a href="create-brand.php">Create Brand</a></li>
-                    <li><a href="manage-brands.php">Manage Brands</a></li>
+                    <li><a href="post-a-brand.php">Create Brand</a></li>
+                    <li><a href="manage-brand.php">Manage Brands</a></li>
                 </ul>
             </li>
             <li>

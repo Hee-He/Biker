@@ -9,7 +9,12 @@ if (isset($_POST['action'])) {
     } elseif ($_POST['action'] === 'deleteBooking' && isset($_POST['bookingId'])) {
         $bookingId = $_POST['bookingId'];
         deleteBooking($bookingId); // Call deleteBooking function
-    } else {
+    }elseif($_POST['action'] === 'deleteBrand' && isset($_POST['brandId']))
+    {
+        $brandid = $_POST['brandId'];
+        deleteBrand($brandid);
+    } 
+    else {
         echo "Invalid action or ID."; // Handle invalid requests
     }
 }
@@ -50,6 +55,22 @@ function deleteBooking($bookingId) {
     $stmt->close();
 }
 
+function deleteBrand($brandid) {
+    global $conn;
+
+    // Prepare SQL statement to delete booking
+    $stmt = $conn->prepare("DELETE FROM tblbrands WHERE id = ?");
+    $stmt->bind_param("i", $brandid);
+
+    // Execute SQL statement
+    if ($stmt->execute()) {
+        echo "Brand with ID $brandid deleted successfully.";
+    } else {
+        echo "Error deleting brand.";
+    }
+
+    $stmt->close();
+}
 // Close connection
 $conn->close();
 ?>
