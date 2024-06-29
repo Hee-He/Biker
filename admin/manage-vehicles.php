@@ -34,7 +34,6 @@
                 echo "<th>Vehicle Name</th>";
                 echo "<th>Vehicle Brand</th>";
                 echo "<th>Price Per Day</th>";
-                echo "<th>Fuel Type</th>";
                 echo "<th>Model Year</th>";
                 echo "<th>Actions</th>"; 
                 echo "</tr>";
@@ -48,7 +47,6 @@
                     echo "<td>" . $row["VehiclesTitle"] . "</td>";
                     echo "<td>" . getBrandName($row["VehiclesBrand"], $conn) . "</td>";
                     echo "<td>" . $row["PricePerDay"] . "</td>";
-                    echo "<td>" . $row["FuelType"] . "</td>";
                     echo "<td>" . $row["ModelYear"] . "</td>";
                     echo "<td>";
                     // Action buttons with JavaScript to update status
@@ -82,7 +80,7 @@
         require("includes/config.php");
 
         // Fetch initial vehicles from the database
-        $sql = "SELECT id, VehiclesTitle, VehiclesBrand, PricePerDay, FuelType, ModelYear FROM tblvehicles";
+        $sql = "SELECT id, VehiclesTitle, VehiclesBrand, PricePerDay, ModelYear FROM tblvehicles";
         $result = $conn->query($sql);
 
         // Generate table rows based on the initial query result
@@ -117,9 +115,7 @@ function deleteVehicle(vehicleId) {
             if (xhr.readyState == 4 && xhr.status == 200) {
                 // Handle the response here, such as showing a message or updating the UI
                 alert(xhr.responseText); // Show the response from PHP
-                if (xhr.responseText.trim() === 'success') {
                     window.location.reload();
-                }
             }
         };
         xhr.send('action=deleteVehicle&vehicleId=' + vehicleId); // Send action and bookingId as query parameters

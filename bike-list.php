@@ -6,6 +6,10 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+// Fetch brand names from tblbrands
+$sql_brands = "SELECT id, brandName FROM tblbrands";
+$result_brands = $conn->query($sql_brands);
+
 // Handle booking process if form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['bike_id'])) {
     session_start(); // Start or resume session
@@ -60,7 +64,18 @@ $conn->close();
             $id = $row["id"];
             echo "<div class='bike'>";
             echo "<h2>" . $row["VehiclesTitle"] . "</h2>";
-            echo "<p><strong>Brand:</strong> " . $row["VehiclesBrand"] . "</p>";
+
+            // Find the corresponding brand name for this vehicle
+            $brandName = "";
+            $result_brands->data_seek(0); // Reset result pointer to the beginning
+            while ($brand = $result_brands->fetch_assoc()) {
+                if ($row["VehiclesBrand"] == $brand["id"]) {
+                    $brandName = $brand["brandName"];
+                    break;
+                }
+            }
+
+            echo "<p><strong>Brand:</strong> " . $brandName . "</p>";
             echo "<p><strong>Price per Day:</strong> Rs. " . $row["PricePerDay"] . "</p>";
             echo "<p><strong>Fuel Type:</strong> " . $row["FuelType"] . "</p>";
             echo "<p><strong>Model Year:</strong> " . $row["ModelYear"] . "</p>";

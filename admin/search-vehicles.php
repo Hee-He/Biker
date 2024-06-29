@@ -3,7 +3,7 @@ require("includes/config.php");
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['search_term'])) {
     $searchTerm = $_POST['search_term'];
-    $sql = "SELECT id, VehiclesTitle, VehiclesBrand, PricePerDay, FuelType, ModelYear FROM tblvehicles WHERE VehiclesTitle LIKE ? OR VehiclesBrand LIKE ?";
+    $sql = "SELECT id, VehiclesTitle, VehiclesBrand, PricePerDay, ModelYear FROM tblvehicles WHERE VehiclesTitle LIKE ? OR VehiclesBrand LIKE ?";
     $stmt = $conn->prepare($sql);
     $likeSearchTerm = '%' . $searchTerm . '%';
     $stmt->bind_param("ss", $likeSearchTerm, $likeSearchTerm);
@@ -19,7 +19,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['search_term'])) {
             echo "<th>Vehicle Name</th>";
             echo "<th>Vehicle Brand</th>";
             echo "<th>Price Per Day</th>";
-            echo "<th>Fuel Type</th>";
             echo "<th>Model Year</th>";
             echo "<th>Actions</th>"; 
             echo "</tr>";
@@ -32,7 +31,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['search_term'])) {
                 echo "<td>" . $row["VehiclesTitle"] . "</td>";
                 echo "<td>" . getBrandName($row["VehiclesBrand"], $conn) . "</td>";
                 echo "<td>" . $row["PricePerDay"] . "</td>";
-                echo "<td>" . $row["FuelType"] . "</td>";
                 echo "<td>" . $row["ModelYear"] . "</td>";
                 echo "<td>";
                 echo '<a href="edit-vehicle.php?id=' . $row["id"] . '" class="action-btn edit-btn" title="Edit"><i class="fa fa-pencil-alt"></i></a>';

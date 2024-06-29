@@ -15,11 +15,18 @@ require("includes/config.php");
 
 // Initialize error message
 $error = "";
-$success = "";
+$uploadDir = '../assets/img/';
 
 // Fetch brand names from tblbrands
 $sql_brands = "SELECT id, brandName FROM tblbrands";
 $result_brands = $conn->query($sql_brands);
+
+// Check for success message in session and display it
+$success = "";
+if (isset($_SESSION['success'])) {
+    $success = $_SESSION['success'];
+    unset($_SESSION['success']);
+}
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -27,30 +34,75 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $brandId = $_POST['brand']; // Use brand ID instead of brand name
     $overview = $_POST['overview'];
     $pricePerDay = $_POST['pricePerDay'];
-    $fuelType = $_POST['fuelType'];
     $modelYear = $_POST['modelYear'];
-    $seatingCapacity = $_POST['seatingCapacity'];
 
     // Validate inputs
-    if (empty($vehicleTitle) || empty($brandId) || empty($overview) || empty($pricePerDay) || empty($fuelType) || empty($modelYear) || empty($seatingCapacity)) {
+    if (empty($vehicleTitle) || empty($brandId) || empty($overview) || empty($pricePerDay) || empty($modelYear)) {
         $error = "All fields are required.";
     } elseif ($pricePerDay < 0) {
         $error = "Price Per Day cannot be negative.";
     } elseif ($modelYear < 0) {
         $error = "Model Year cannot be negative.";
     } else {
-        // Insert vehicle into the database
-        $sql = "INSERT INTO tblvehicles (VehiclesTitle, VehiclesBrand, VehiclesOverview, PricePerDay, FuelType, ModelYear, SeatingCapacity) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("sdsdsii", $vehicleTitle, $brandId, $overview, $pricePerDay, $fuelType, $modelYear, $seatingCapacity);
+        $fileNames = [];
+        $fileErrors = [];
 
-        if ($stmt->execute()) {
-            $success = "Vehicle posted successfully!";
-            unset($_POST);
-        } else {
-            $error = "Error: Could not post vehicle.";
+        // Handle file uploads
+        for ($i = 0; $i < count($_FILES['vehicleImage']['name']); $i++) {
+            $file = [
+                'name' => $_FILES['vehicleImage']['name'][$i],
+                'type' => $_FILES['vehicleImage']['type'][$i],
+                'tmp_name' => $_FILES['vehicleImage']['tmp_name'][$i],
+                'error' => $_FILES['vehicleImage']['error'][$i],
+                'size' => $_FILES['vehicleImage']['size'][$i]
+            ];
+
+            $fileName = $file['name'];
+            $fileTmpName = $file['tmp_name'];
+            $fileSize = $file['size'];
+            $fileError = $file['error'];
+            $fileType = $file['type'];
+
+            $fileExt = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+            $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+
+            if (in_array($fileExt, $allowedExtensions)) {
+                if ($fileError === 0) {
+                    $newFileName = uniqid('', true) . "." . $fileExt;
+                    $uploadPath = $uploadDir . $newFileName;
+
+                    if (move_uploaded_file($fileTmpName, $uploadPath)) {
+                        $fileNames[] = $newFileName;
+                    } else {
+                        $fileErrors[] = "Error: Could not upload file " . $fileName;
+                    }
+                } else {
+                    $fileErrors[] = "Error: $fileError for file " . $fileName;
+                }
+            } else {
+                $fileErrors[] = "File type not allowed for file " . $fileName . ". Allowed types: jpg, jpeg, png, gif.";
+            }
         }
-        $stmt->close();
+
+        if (empty($fileErrors)) {
+            // Prepare SQL statement
+            $sql = "INSERT INTO tblvehicles (VehiclesTitle, VehiclesBrand, VehiclesOverview, PricePerDay, ModelYear, Vimage1, Vimage2, Vimage3, Vimage4, Vimage5) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("sisdisssss", $vehicleTitle, $brandId, $overview, $pricePerDay, $modelYear, 
+                                $fileNames[0], $fileNames[1], $fileNames[2], $fileNames[3], $fileNames[4]);
+
+            if ($stmt->execute()) {
+                $_SESSION['success'] = "Vehicle posted successfully!";
+                // Redirect to the same page to clear form and prevent duplicate submissions
+                header("Location: " . $_SERVER['PHP_SELF']);
+                exit();
+            } else {
+                $error = "Error: Could not post vehicle.";
+            }
+            $stmt->close();
+        } else {
+            $error = implode('<br>', $fileErrors);
+        }
     }
 }
 ?>
@@ -77,43 +129,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <section class="post-vehicle-section">
             <h1 class="header">Post a Vehicle</h1>
-            <form method="POST" class="post-vehicle-form">
+            <form method="POST" class="post-vehicle-form" enctype="multipart/form-data">
                 <div class="form-group">
                     <label for="vehicleTitle">Vehicle Title</label>
-                    <input type="text" name="vehicleTitle" id="vehicleTitle" value="" required>
+                    <input type="text" name="vehicleTitle" id="vehicleTitle" value="<?php echo isset($vehicleTitle) ? htmlspecialchars($vehicleTitle) : ''; ?>" required>
                 </div>
                 <div>
                     <label for="brand">Brand</label>
                     <select name="brand" id="brand" required>
                         <option value="">Select Brand</option>
                         <?php while ($row = $result_brands->fetch_assoc()): ?>
-                            <option value="<?php echo $row['id']; ?>"><?php echo $row['brandName']; ?></option>
+                            <option value="<?php echo $row['id']; ?>" <?php echo (isset($brandId) && $brandId == $row['id']) ? 'selected' : ''; ?>><?php echo $row['brandName']; ?></option>
                         <?php endwhile; ?>
                     </select>
                 </div>
                 <div class="full-row">
                     <label for="overview">Overview</label>
-                    <textarea name="overview" id="overview" required></textarea>
+                    <textarea name="overview" id="overview" required><?php echo isset($overview) ? htmlspecialchars($overview) : ''; ?></textarea>
                 </div>
                 <div class="full-row">
                     <label for="pricePerDay">Price Per Day</label>
-                    <input type="number" name="pricePerDay" id="pricePerDay" required min="0">
-                </div>
-                <div>
-                    <label for="fuelType">Fuel Type</label>
-                    <input type="text" name="fuelType" id="fuelType" required>
+                    <input type="number" name="pricePerDay" id="pricePerDay" required min="0" value="<?php echo isset($pricePerDay) ? htmlspecialchars($pricePerDay) : ''; ?>">
                 </div>
                 <div>
                     <label for="modelYear">Model Year</label>
-                    <input type="number" name="modelYear" id="modelYear" required min="0">
-                </div>
-                <div>
-                    <label for="seatingCapacity">Seating Capacity</label>
-                    <input type="number" name="seatingCapacity" id="seatingCapacity" required>
+                    <input type="number" name="modelYear" id="modelYear" required min="0" value="<?php echo isset($modelYear) ? htmlspecialchars($modelYear) : ''; ?>">
                 </div>
                 <div class="full-row">
-                    <label for="vehicleImage">Vehicle Image</label>
-                    <input type="file" name="vehicleImage" id="vehicleImage" required>
+                    <label for="vehicleImage">Vehicle Images (up to 5)</label>
+                    <input type="file" name="vehicleImage[]" id="vehicleImage" multiple required>
                 </div>
                 <button type="submit" class="btn btn-primary">Post Vehicle</button>
             </form>
