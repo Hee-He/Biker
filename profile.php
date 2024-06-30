@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update'])) {
     $stmt->bind_param('sii', $newName, $newContact, $user_id);
     if ($stmt->execute()) {
         echo "Update Successfully";
-        $_SESSION['username'] = $newName; // Update session variable with new username
+        $_SESSION['username'] = $newName; 
         header("Location: profile.php");
         exit();
     } else {

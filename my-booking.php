@@ -37,7 +37,7 @@ if ($results->num_rows > 0) {
     $result = $stmt->get_result();
 
 } else {
-    // Handle case where user does not exist (though it should ideally not happen if session is managed properly)
+    
     echo "User not found.";
     exit();
 }
@@ -68,7 +68,7 @@ $conn->close();
     </style>
 </head>
 <body>
-    <?php include("includes/header.php"); ?> <!-- Include header that manages session start -->
+    <?php include("includes/header.php"); ?> 
     <main class="container">
         <section class="booking-section">
             <h2>My Booking Details</h2>
@@ -98,7 +98,7 @@ $conn->close();
                     } elseif ($status == 0) {
                         return "Cancelled";
                     } else {
-                        return "Approved"; // Handle unexpected status values gracefully
+                        return "Approved";
                     }
                 }
                 ?>

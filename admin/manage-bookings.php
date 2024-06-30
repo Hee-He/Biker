@@ -91,7 +91,7 @@ $result = $conn->query($sql);
                     echo "<tr>";
                     echo "<th>Booking ID</th>";
                     echo "<th>Name</th>";
-                    echo "<th>Vehicle</th>"; // Changed from Vehicle ID to Vehicle
+                    echo "<th>Vehicle</th>"; 
                     echo "<th>From Date</th>";
                     echo "<th>To Date</th>";
                     echo "<th>Message</th>";
@@ -108,8 +108,8 @@ $result = $conn->query($sql);
 
                         echo "<tr>";
                         echo "<td>" . $row["id"] . "</td>";
-                        echo "<td>" . $row["FullName"] . "</td>"; // Display full name instead of email
-                        echo "<td>" . $vehicleName . "</td>"; // Display vehicle name instead of ID
+                        echo "<td>" . $row["FullName"] . "</td>"; 
+                        echo "<td>" . $vehicleName . "</td>"; 
                         echo "<td>" . $row["FromDate"] . "</td>";
                         echo "<td>" . $row["ToDate"] . "</td>";
                         echo "<td>" . $row["message"] . "</td>";

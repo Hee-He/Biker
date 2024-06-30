@@ -20,10 +20,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['bike_id'])) {
         echo "<script>document.getElementById('loginModal').style.display = 'block';</script>";
     } else {
         $bikeId = $_POST['bike_id'];
-        $userId = $_SESSION['user_id']; // Replace with your actual session variable for user ID
-        $fromDate = $_POST['from_date'] ?? ''; // Replace with actual booking start date logic
-        $toDate = $_POST['to_date'] ?? ''; // Replace with actual booking end date logic
-        $message = $_POST['message'] ?? ''; // Replace with actual message from user input or default
+        $userId = $_SESSION['user_id']; 
+        $fromDate = $_POST['from_date'] ?? ''; 
+        $toDate = $_POST['to_date'] ?? ''; 
+        $message = $_POST['message'] ?? ''; 
 
         // Prepare and bind parameters to insert into booking table
         $stmt = $conn->prepare("INSERT INTO tblbooking (userEmail, VehicleId, FromDate, ToDate, message, Status, PostingDate) VALUES (?, ?, ?, ?, ?, null, NOW())");

@@ -26,7 +26,7 @@ function getStatusText($status) {
 
 // Initialize variables for search functionality
 $search_term = "";
-$where_clause = ""; // This will be used in the SQL query WHERE clause
+$where_clause = ""; 
 
 // Process search term if submitted via POST
 if (isset($_POST['search_term'])) {
@@ -56,7 +56,7 @@ function generateTableRows($result, $conn) {
         echo "<th>Message</th>";
         echo "<th>Status</th>";
         echo "<th>Posting Date</th>";
-        echo "<th>Actions</th>"; // Add a column for actions (update status, delete, etc.)
+        echo "<th>Actions</th>"; 
         echo "</tr>";
         echo "</thead>";
         echo "<tbody>";
@@ -76,7 +76,7 @@ function generateTableRows($result, $conn) {
                 $userData = $results->fetch_assoc();
                 $fullName = $userData['FullName'];
             } else {
-                $fullName = "Unknown"; // Default if user not found (shouldn't happen ideally)
+                $fullName = "Unknown"; 
             }
 
             echo "<tr>";

@@ -66,7 +66,7 @@ function generateTableRows($result) {
         echo "<th>Contact No</th>";
         echo "<th>Registration Date</th>";
         echo "<th>Status</th>";
-        echo "<th>Actions</th>"; // Add a column for actions (update status, delete, etc.)
+        echo "<th>Actions</th>"; 
         echo "</tr>";
         echo "</thead>";
         echo "<tbody>";
@@ -105,11 +105,11 @@ function generateTableRows($result) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Users</title>
-    <link rel="stylesheet" href="assets/css/style.css?v=6"> <!-- Include your CSS file here -->
+    <link rel="stylesheet" href="assets/css/style.css?v=6"> 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
-    <?php include("includes/header.php"); ?> <!-- Include admin header that manages session start -->
+    <?php include("includes/header.php"); ?> 
     <div class="container-manage-users">
             <div class="header">
             <h1>Manage Users</h1>

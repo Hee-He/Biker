@@ -14,7 +14,7 @@ function getVehicleName($vehicleId) {
         $row = $result->fetch_assoc();
         return $row['VehiclesTitle'];
     } else {
-        return "Unknown"; // Default if vehicle not found
+        return "Unknown"; 
     }
 }
 
@@ -35,7 +35,7 @@ function getBrandNames() {
 }
 // function to fetch Username
 function getUsername($userId) {
-    global $conn; // Assuming $conn is your database connection object
+    global $conn; 
 
     $query = "SELECT FullName FROM tblusers WHERE id = ?";
     $stmt = $conn->prepare($query);
@@ -47,7 +47,7 @@ function getUsername($userId) {
         $userData = $result->fetch_assoc();
         return $userData['FullName'];
     } else {
-        return "Unknown"; // Default if user not found (adjust as per your application logic)
+        return "Unknown"; 
     }
 }
 // Close connection

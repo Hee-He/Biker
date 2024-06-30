@@ -131,7 +131,7 @@ $conn->close();
     </style>
 </head>
 <body>
-    <?php include("includes/header.php"); ?> <!-- Include header that manages session start -->
+    <?php include("includes/header.php"); ?> 
     <div class="containers">
         <h2>Update Password</h2>
         <?php if ($error): ?>

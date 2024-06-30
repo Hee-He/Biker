@@ -5,15 +5,15 @@ require("includes/config.php");
 if (isset($_POST['action'])) {
     if ($_POST['action'] === 'deleteVehicle' && isset($_POST['vehicleId'])) {
         $vehicleId = $_POST['vehicleId'];
-        deleteVehicle($vehicleId); // Call deleteVehicle function
+        deleteVehicle($vehicleId); 
     } elseif ($_POST['action'] === 'deleteBooking' && isset($_POST['bookingId'])) {
         $bookingId = $_POST['bookingId'];
-        deleteBooking($bookingId); // Call deleteBooking function
+        deleteBooking($bookingId); 
     } elseif ($_POST['action'] === 'deleteBrand' && isset($_POST['brandId'])) {
         $brandId = $_POST['brandId'];
         deleteBrand($brandId);
     } else {
-        echo "Invalid action or ID."; // Handle invalid requests
+        echo "Invalid action or ID."; 
     }
 }
 

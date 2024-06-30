@@ -15,7 +15,7 @@ require("includes/config.php");
 
 // Initialize variables for search functionality
 $search_term = "";
-$where_clause = ""; // This will be used in the SQL query WHERE clause
+$where_clause = ""; 
 
 // Process search term if submitted via POST
 if (isset($_POST['search_term'])) {
@@ -42,7 +42,7 @@ function generateTableRows($result) {
         echo "<th>Contact No</th>";
         echo "<th>Registration Date</th>";
         echo "<th>Status</th>";
-        echo "<th>Actions</th>"; // Add a column for actions (update status, delete, etc.)
+        echo "<th>Actions</th>"; 
         echo "</tr>";
         echo "</thead>";
         echo "<tbody>";

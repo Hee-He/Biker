@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Vehicles</title>
-    <link rel="stylesheet" href="assets/css/style.css?v=6"> <!-- Link to your CSS file -->
+    <link rel="stylesheet" href="assets/css/style.css?v=6"> 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
-    <?php include("includes/header.php"); ?> <!-- Include your header -->
+    <?php include("includes/header.php"); ?> 
 
     <div class="container-manage-vehicle">
         <div class="header">
@@ -20,7 +20,7 @@
                 </form>
             </div>
         </div>
-        <div class="content" id="vehicle_details"> <!-- Added ID here -->
+        <div class="content" id="vehicle_details"> 
             <?php
             // Function to generate table rows
             function generateTableRows($result, $conn) {
@@ -91,12 +91,12 @@
         var confirmDelete = confirm("Are you sure you want to delete this brand?");
         if (confirmDelete) {
             var xhr = new XMLHttpRequest();
-            xhr.open('POST', 'delete-data.php', true); // Adjust the URL to your PHP script handling deletions
+            xhr.open('POST', 'delete-data.php', true); 
             xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
             xhr.onreadystatechange = function() {
                 if (xhr.readyState == 4 && xhr.status == 200) {
                     // Handle the response here, such as showing a message or updating the UI
-                    alert(xhr.responseText); // Show the response from PHP
+                    alert(xhr.responseText); 
                     
                     window.location.reload();
                     

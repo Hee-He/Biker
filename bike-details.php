@@ -156,8 +156,7 @@ $conn->close();
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             border-radius: 5px;
             overflow: hidden;
-            min-height: 500px; /* Set a minimum height for consistent sizing */
-        }
+            min-height: 500px; 
 
         .bike-details .bike {
             flex: 1 1 auto;
@@ -167,8 +166,8 @@ $conn->close();
         }
 
         .bike-details .booking-form {
-            flex: 0 0 300px; /* Fixed width */
-            max-width: 300px; /* Fixed width */
+            flex: 0 0 300px; 
+            max-width: 300px; 
             padding: 20px;
             background-color: #f0f0f0;
             border-left: 1px solid #ccc;
@@ -198,7 +197,7 @@ $conn->close();
         .bike-details .bike-overview {
             flex-grow: 1;
             overflow-y: auto;
-            max-height: 200px; /* Adjust this height as needed */
+            max-height: 200px; 
             margin-top: 20px;
         }
 

@@ -6,7 +6,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['search_term'])) {
     $sql = "SELECT id, BrandName FROM tblbrands WHERE BrandName LIKE ? OR id LIKE ?";
     $stmt = $conn->prepare($sql);
     $likeSearchTerm = '%' . $searchTerm . '%';
-    $stmt->bind_param("ss", $likeSearchTerm, $likeSearchTerm); // Change "si" to "ss"
+    $stmt->bind_param("ss", $likeSearchTerm, $likeSearchTerm); 
     $stmt->execute();
     $result = $stmt->get_result();
 
@@ -17,7 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['search_term'])) {
             echo "<tr>";
             echo "<th>ID</th>";
             echo "<th>Brand Name</th>";
-            echo "<th>Actions</th>"; // Ensure actions column is added
+            echo "<th>Actions</th>"; 
             echo "</tr>";
             echo "</thead>";
             echo "<tbody>";
@@ -40,7 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['search_term'])) {
         }
     }
 
-    header('Content-Type: text/html'); // Ensure the content type is set correctly
+    header('Content-Type: text/html'); 
     generateTableRows($result, $conn);
 
     $stmt->close();
