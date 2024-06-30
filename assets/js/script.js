@@ -27,7 +27,7 @@ function showSlidesAuto(id) {
     slideIndices[id]++;
     if (slideIndices[id] > slides.length) {slideIndices[id] = 1}
     slides[slideIndices[id]-1].style.display = "block";
-    setTimeout(() => showSlidesAuto(id), 5000); // Change image every 5 seconds
+    setTimeout(() => showSlidesAuto(id), 5000); 
 }
 
 
@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var loginLink = document.getElementById('loginLink');
     if (loginLink) {
         loginLink.addEventListener('click', function(event) {
-            event.preventDefault(); // Prevent default link behavior
+            event.preventDefault(); 
             openModal();
         });
     }
@@ -72,8 +72,8 @@ function openModal(modalId) {
     if (closeBtn && popup) {
         // Position popup next to close button
         var closeBtnRect = closeBtn.getBoundingClientRect();
-        popup.style.top = closeBtnRect.bottom + 10 + 'px'; // Adjust vertical position as needed
-        popup.style.left = closeBtnRect.right - popup.offsetWidth + 'px'; // Adjust horizontal position as needed
+        popup.style.top = closeBtnRect.bottom + 10 + 'px'; 
+        popup.style.left = closeBtnRect.right - popup.offsetWidth + 'px'; 
         popup.classList.add('active');
     }
 }

@@ -219,25 +219,25 @@ body {
 
 /* Modal Content */
 .modal-content {
-    width: 300px; /* Example width, adjust as needed */
-    max-width: 80%; /* Ensure content can resize responsively */
-    margin: 10% auto; /* Center align horizontally and adjust vertically */
-    background-color: #fff; /* Example background color */
-    border: 1px solid #ccc; /* Example border */
-    padding: 20px; /* Example padding */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Example box shadow */
-    position: relative; /* Relative positioning for child elements */
-    z-index: 2; /* Ensure modal content is above the background */
+    width: 300px; 
+    max-width: 80%; 
+    margin: 10% auto; 
+    background-color: #fff; 
+    border: 1px solid #ccc; 
+    padding: 20px; 
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+    position: relative; 
+    z-index: 2; 
 }
 
 /* Close Button */
 .close {
     position: absolute;
-    top: -150px; /* Adjust top position */
-    right: 5px; /* Adjust right position */
-    font-size: 2rem; /* Example font size */
+    top: -150px; 
+    right: 5px; 
+    font-size: 2rem; 
     cursor: pointer;
-    z-index: 3; /* Ensure close button is on top of the modal content */
+    z-index: 3; 
 }
 .close:hover
 {
@@ -247,20 +247,20 @@ body {
 /* Form Containers */
 .login-container{
     max-width: 400px;
-    width: 100%; /* Ensure forms take full width within modal */
-    margin: 0 auto; /* Center horizontally */
+    width: 100%; 
+    margin: 0 auto; 
     padding: 20px;
     background-color: #f0f0f0;
     border: 1px solid #ccc;
     border-radius: 8px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    max-height: 70vh; /* Set max height to fit within viewport */
-    overflow-y: hidden; /* Allow scrolling if content exceeds max height */
-    position: absolute; /* Absolute positioning within modal */
-    top: 50%; /* Center vertically */
-    left: 50%; /* Center horizontally */
-    transform: translate(-50%, -50%); /* Adjust to center horizontally and vertically */
-    z-index: 1; /* Ensure form containers are below the close button */
+    max-height: 70vh; 
+    overflow-y: hidden; 
+    position: absolute; 
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%); 
+    z-index: 1; 
 }
 
 .login-container form{
@@ -285,7 +285,7 @@ body {
 .login-container input[type="submit"]{
     width: 100%;
     padding: 12px;
-    background-color: #4CAF50; /* Green button for login */
+    background-color: #4CAF50; 
     color: white;
     border: none;
     border-radius: 4px;
@@ -294,7 +294,7 @@ body {
 }
 
 .login-container input[type="submit"]:hover {
-    background-color: #45a049; /* Darker green on hover */
+    background-color: #45a049; 
 }
 
 .login-container .error-message {
@@ -313,40 +313,39 @@ body {
 }
 
 .login-container p a {
-    color: #007bff; /* Blue links */
+    color: #007bff; 
     text-decoration: none;
 }
 
 .login-container p a:hover {
-    text-decoration: underline; /* Underline on hover */
+    text-decoration: underline; 
 }
 
 
 .signup-container {
     max-width: 500px;
-    width: 100%; /* Ensure forms take full width within modal */
-    margin: 0 auto; /* Center horizontally */
+    width: 100%; 
+    margin: 0 auto; 
     padding: 20px;
     background-color: #f0f0f0;
     border: 1px solid #ccc;
     border-radius: 8px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    max-height: 90vh; /* Set max height to fit within viewport */
-    overflow-y: auto; /* Disable vertical scrolling */
-    position: absolute; /* Absolute positioning within modal */
-    top: 50%; /* Center vertically */
-    left: 50%; /* Center horizontally */
-    transform: translate(-50%, -50%); /* Adjust to center horizontally and vertically */
-    z-index: 1; /* Ensure form containers are below the close button */
+    max-height: 90vh; 
+    overflow-y: auto; 
+    position: absolute; 
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%); 
+    z-index: 1; 
 }
 
 .signup-container {
-    top: calc(50% + 150px); /* Adjusted top position to center form with more space */
+    top: calc(50% + 150px); 
 }
 
 .signup-container form {
-    margin-bottom: 15px; /* Bottom margin for form */
-}
+    margin-bottom: 15px; /
 
 .signup-container label {
     display: block;
@@ -381,7 +380,7 @@ body {
 }
 
 .signup-container .form-group.checkbox {
-    margin-bottom: 20px; /* Increase margin for checkbox */
+    margin-bottom: 20px; 
 }
 
 .signup-container p {
