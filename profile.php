@@ -54,27 +54,47 @@ function uploadFile($fileInput, $uploadDir) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update'])) {
     $newName = $_POST['username'];
     $newContact = $_POST['contact'];
-    
+
     // Handle file uploads only if new files are provided
     $citizenImg = !empty($_FILES['citizen']['name']) ? uploadFile('citizen', './img/') : $citizenImg;
     $licenseImg = !empty($_FILES['license']['name']) ? uploadFile('license', './img/') : $licenseImg;
 
+    // Prepare SQL query for update
     $updateSql = "UPDATE `bikerental`.`tblusers`
                 SET
                 `FullName` = ?,
-                `ContactNo` = ?,
-                `citizen_img` = ?,
-                `license_img` = ?
-                WHERE id = ?";
-    $stmt = $conn->prepare($updateSql);
-    $stmt->bind_param('ssssi', $newName, $newContact, $citizenImg, $licenseImg, $user_id);
+                `ContactNo` = ?";
 
-    if ($stmt->execute()) {
-        $_SESSION['username'] = $newName; 
-        header("Location: profile.php");
-        exit();
+    // Append image fields to update query only if they are not empty
+    $params = array($newName, $newContact);
+    if (!empty($citizenImg)) {
+        $updateSql .= ", `citizen_img` = ?";
+        $params[] = $citizenImg;
+    }
+    if (!empty($licenseImg)) {
+        $updateSql .= ", `license_img` = ?";
+        $params[] = $licenseImg;
+    }
+
+    $updateSql .= " WHERE id = ?";
+    $params[] = $user_id;
+
+    // Execute update query
+    $stmt = $conn->prepare($updateSql);
+    if ($stmt) {
+        // Dynamically bind parameters based on the presence of image updates
+        $types = str_repeat('s', count($params)); // Generate type string
+        $stmt->bind_param($types, ...$params);
+
+        if ($stmt->execute()) {
+            $_SESSION['username'] = $newName;
+            header("Location: profile.php");
+            exit();
+        } else {
+            echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+        }
     } else {
-        echo "Failed to update!";
+        echo "Prepare failed: (" . $conn->errno . ") " . $conn->error;
     }
 }
 ?>
@@ -119,6 +139,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update'])) {
         .form-container input[type="submit"]:hover {
             background-color: #218838;
         }
+        /* Hide file inputs if images are already uploaded */
+        .form-container .hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -127,21 +151,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update'])) {
         <h2>Update Profile</h2>
         <form action="" method="post" enctype="multipart/form-data">
             <label for="username">Full Name:</label>
-            <input type="text" id="username" name="username" value="<?php echo htmlentities($fullName); ?>"><br>
-            
+            <input type="text" id="username" name="username" value="<?php echo $_SESSION['username']; ?>"><br>
+
             <label for="contact">Contact No:</label>
             <input type="text" id="contact" name="contact" value="<?php echo htmlentities($contactNo); ?>"><br>
-            
+
             <?php if (empty($citizenImg)): ?>
                 <label for="citizen">Citizen Image:</label>
                 <input type="file" id="citizen" accept=".jpg,.png,.jpeg,.bmp,.webp" name="citizen"><br>
+            <?php else: ?>
+                <input type="hidden" name="citizen_current" value="<?php echo htmlentities($citizenImg); ?>">
             <?php endif; ?>
-            
+
             <?php if (empty($licenseImg)): ?>
                 <label for="license">License Image:</label>
                 <input type="file" id="license" accept=".jpg,.png,.jpeg,.bmp,.webp" name="license"><br>
+            <?php else: ?>
+                <input type="hidden" name="license_current" value="<?php echo htmlentities($licenseImg); ?>">
             <?php endif; ?>
-            
+
             <input type="submit" name="update" value="Update">
         </form>
     </div>

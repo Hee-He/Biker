@@ -18,12 +18,10 @@ $message = '';
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-
-// Handle form submission
 // Handle form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['bike_id'])) {
     $loggedInUser = $_SESSION['username'];
-    
+
     // Checking whether the profile is fully setup or not
     $sql = "SELECT citizen_img, license_img FROM tblusers WHERE FullName=?";
     $stmt = $conn->prepare($sql);
@@ -31,7 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['bike_id'])) {
     $stmt->execute();
     $result = $stmt->get_result();
     $row = $result->fetch_assoc();
-    
+
     // Check if user is logged in
     if (!isset($_SESSION['user_id'])) {
         // Show login modal if not logged in
@@ -66,6 +64,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['bike_id'])) {
 
             // Execute SQL statement
             if ($stmt->execute()) {
+                // Decrease bike quantity by 1 after successful booking
+                $stmt_update = $conn->prepare("UPDATE tblvehicles SET vehicle_quantity = vehicle_quantity - 1 WHERE id = ?");
+                $stmt_update->bind_param("i", $bikeId);
+                $stmt_update->execute();
+                $stmt_update->close();
+
                 echo "<script>alert('Booking successful!');</script>";
                 header("Location: " . $_SERVER['PHP_SELF'] . "?id=$bikeId");
                 exit();
@@ -79,8 +83,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['bike_id'])) {
         }
     }
 }
-
-
 
 // Fetch bike details if bike ID is provided in the URL
 if (isset($_GET['id'])) {
@@ -116,6 +118,9 @@ if (isset($_GET['id'])) {
 // Close connection
 $conn->close();
 ?>
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
