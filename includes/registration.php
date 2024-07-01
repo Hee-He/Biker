@@ -21,19 +21,19 @@ if(isset($_POST['signup'])) {
 }
 ?>
 <script>
-function checkAvailability() {
-    $("#loaderIcon").show();
-    jQuery.ajax({
-        url: "check-availability.php",
-        data: 'emailid=' + $("#emailid").val(),
-        type: "POST",
-        success: function(data) {
-            $("#user-availability-status").html(data);
-            $("#loaderIcon").hide();
-        },
-        error: function() {}
-    });
-}
+// function checkAvailability() {
+//     $("#loaderIcon").show();
+//     jQuery.ajax({
+//         url: "check-availability.php",
+//         data: 'emailid=' + $("#emailid").val(),
+//         type: "POST",
+//         success: function(data) {
+//             $("#user-availability-status").html(data);
+//             $("#loaderIcon").hide();
+//         },
+//         error: function() {}
+//     });
+// }
 
 function valid() {
     if (document.signup.password.value != document.signup.confirmpassword.value) {

@@ -22,11 +22,11 @@ if (isset($_GET['id'])) {
     $vehicleId = $_GET['id'];
 
     // Fetch vehicle details from the database
-    $sql = "SELECT VehiclesTitle, VehiclesBrand, VehiclesOverview, PricePerDay, FuelType, ModelYear, SeatingCapacity FROM tblvehicles WHERE id = ?";
+    $sql = "SELECT VehiclesTitle, VehiclesBrand, VehiclesOverview, PricePerDay, ModelYear, vehicle_quantity FROM tblvehicles WHERE id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $vehicleId);
     $stmt->execute();
-    $stmt->bind_result($vehicleTitle, $brandId, $overview, $pricePerDay, $fuelType, $modelYear, $seatingCapacity);
+    $stmt->bind_result($vehicleTitle, $brandId, $overview, $pricePerDay, $modelYear, $vehicleQuantity);
     $stmt->fetch();
     $stmt->close();
 } else {
@@ -40,12 +40,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $brandId = $_POST['brand'];
     $overview = $_POST['overview'];
     $pricePerDay = $_POST['pricePerDay'];
-    $fuelType = $_POST['fuelType'];
+    $vehicleQuantity = $_POST['vehicleQuantity'];
     $modelYear = $_POST['modelYear'];
-    $seatingCapacity = $_POST['seatingCapacity'];
 
     // Validate inputs
-    if (empty($vehicleTitle) || empty($brandId) || empty($overview) || empty($pricePerDay) || empty($fuelType) || empty($modelYear) || empty($seatingCapacity)) {
+    if (empty($vehicleTitle) || empty($brandId) || empty($overview) || empty($pricePerDay) || empty($modelYear) || empty($vehicleQuantity)) {
         $error = "All fields are required.";
     } elseif ($pricePerDay < 0) {
         $error = "Price Per Day cannot be negative.";
@@ -53,9 +52,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = "Model Year cannot be negative.";
     } else {
         // Update vehicle details in the database
-        $sql = "UPDATE tblvehicles SET VehiclesTitle = ?, VehiclesBrand = ?, VehiclesOverview = ?, PricePerDay = ?, FuelType = ?, ModelYear = ?, SeatingCapacity = ? WHERE id = ?";
+        $sql = "UPDATE tblvehicles SET VehiclesTitle = ?, VehiclesBrand = ?, VehiclesOverview = ?, PricePerDay = ?, ModelYear = ?, vehicle_quantity= ? WHERE id = ?";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("sssdsiii", $vehicleTitle, $brandId, $overview, $pricePerDay, $fuelType, $modelYear, $seatingCapacity, $vehicleId);
+        $stmt->bind_param("sssdsii", $vehicleTitle, $brandId, $overview, $pricePerDay, $modelYear, $vehicleQuantity, $vehicleId);
 
         if ($stmt->execute()) {
             $success = "Vehicle updated successfully!";
@@ -129,16 +128,12 @@ $brands = fetchBrands($conn);
                     <input type="number" name="pricePerDay" id="pricePerDay" value="<?php echo htmlspecialchars($pricePerDay); ?>" required min="0">
                 </div>
                 <div class="form-group">
-                    <label for="fuelType">Fuel Type</label>
-                    <input type="text" name="fuelType" id="fuelType" value="<?php echo htmlspecialchars($fuelType); ?>" required>
-                </div>
-                <div class="form-group">
                     <label for="modelYear">Model Year</label>
                     <input type="number" name="modelYear" id="modelYear" value="<?php echo htmlspecialchars($modelYear); ?>" required min="0">
                 </div>
                 <div class="form-group">
-                    <label for="seatingCapacity">Seating Capacity</label>
-                    <input type="number" name="seatingCapacity" id="seatingCapacity" value="<?php echo htmlspecialchars($seatingCapacity); ?>" required>
+                    <label for="vehicleQuantity">Quantity</label>
+                    <input type="number" name="vehicleQuantity" id="vehicleQuantity" value="<?php echo htmlspecialchars($vehicleQuantity); ?>" required min="0">
                 </div>
                 <button type="submit" class="btn btn-primary">Update Vehicle</button>
             </form>

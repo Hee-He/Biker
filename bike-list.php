@@ -39,7 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['bike_id'])) {
 }
 
 // SQL query to fetch all bikes
-$sql = "SELECT id, VehiclesTitle, VehiclesBrand, PricePerDay, FuelType, ModelYear, SeatingCapacity, Vimage1, Vimage2, Vimage3, Vimage4, Vimage5, VehiclesOverview FROM `bikerental`.`tblvehicles`";
+$sql = "SELECT id, VehiclesTitle, VehiclesBrand, PricePerDay, ModelYear, vehicle_quantity, Vimage1, Vimage2, Vimage3, Vimage4, Vimage5, VehiclesOverview FROM `bikerental`.`tblvehicles`";
 $result = $conn->query($sql);
 
 // Close connection
@@ -77,9 +77,8 @@ $conn->close();
 
             echo "<p><strong>Brand:</strong> " . $brandName . "</p>";
             echo "<p><strong>Price per Day:</strong> Rs. " . $row["PricePerDay"] . "</p>";
-            echo "<p><strong>Fuel Type:</strong> " . $row["FuelType"] . "</p>";
             echo "<p><strong>Model Year:</strong> " . $row["ModelYear"] . "</p>";
-            echo "<p><strong>Seating Capacity:</strong> " . $row["SeatingCapacity"] . "</p>";
+            echo "<p><strong>Vehicle Quantity:</strong> " . $row["vehicle_quantity"] . "</p>";
 
             // Check for images and display slideshow
             $hasImages = false;
