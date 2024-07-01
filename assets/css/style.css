@@ -345,7 +345,8 @@ body {
 }
 
 .signup-container form {
-    margin-bottom: 15px; /
+    margin-bottom: 15px; 
+}
 
 .signup-container label {
     display: block;

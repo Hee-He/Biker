@@ -35,7 +35,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $overview = $_POST['overview'];
     $pricePerDay = $_POST['pricePerDay'];
     $modelYear = $_POST['modelYear'];
-
+    $quantity = $_POST['Quantity'];
+    
     // Validate inputs
     if (empty($vehicleTitle) || empty($brandId) || empty($overview) || empty($pricePerDay) || empty($modelYear)) {
         $error = "All fields are required.";
@@ -86,10 +87,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if (empty($fileErrors)) {
             // Prepare SQL statement
-            $sql = "INSERT INTO tblvehicles (VehiclesTitle, VehiclesBrand, VehiclesOverview, PricePerDay, ModelYear, Vimage1, Vimage2, Vimage3, Vimage4, Vimage5) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $sql = "INSERT INTO tblvehicles (VehiclesTitle, VehiclesBrand, VehiclesOverview, PricePerDay, ModelYear, Vimage1, Vimage2, Vimage3, Vimage4, Vimage5,vehicle_quantity) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
             $stmt = $conn->prepare($sql);
-            $stmt->bind_param("sisdisssss", $vehicleTitle, $brandId, $overview, $pricePerDay, $modelYear, 
-                                $fileNames[0], $fileNames[1], $fileNames[2], $fileNames[3], $fileNames[4]);
+            $stmt->bind_param("sisdisssssi", $vehicleTitle, $brandId, $overview, $pricePerDay, $modelYear, 
+                                $fileNames[0], $fileNames[1], $fileNames[2], $fileNames[3], $fileNames[4],$quantity);
 
             if ($stmt->execute()) {
                 $_SESSION['success'] = "Vehicle posted successfully!";
@@ -154,6 +155,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div>
                     <label for="modelYear">Model Year</label>
                     <input type="number" name="modelYear" id="modelYear" required min="0" value="<?php echo isset($modelYear) ? htmlspecialchars($modelYear) : ''; ?>">
+                </div>
+                <div>
+                    <label for="Quantity">Quantity</label>
+                    <input type="number" name="Quantity" id="quantity" required min="1" value="<?php echo isset($quantity) ? htmlspecialchars($quantity) : ''; ?>">
                 </div>
                 <div class="full-row">
                     <label for="vehicleImage">Vehicle Images (up to 5)</label>
