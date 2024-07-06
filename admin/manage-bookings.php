@@ -26,25 +26,46 @@ function getStatusText($status) {
 }
 
 // Handle action buttons (existing code)
+// Handle action buttons (existing code)
 if (isset($_GET['action']) && isset($_GET['booking_id'])) {
     $action = $_GET['action'];
     $booking_id = $_GET['booking_id'];
 
-    // Update status based on action (existing code)
+    // Initialize status and vehicle ID variables
+    $status = null;
+    $vehicleId = null;
+
+    // Update status based on action
     if ($action == "approve") {
         $status = 1;
     } elseif ($action == "cancel") {
         $status = 0;
+        // Fetch vehicle ID associated with the booking
+        $stmt = $conn->prepare("SELECT VehicleId FROM tblbooking WHERE id = ?");
+        $stmt->bind_param("i", $booking_id);
+        $stmt->execute();
+        $stmt->bind_result($vehicleId);
+        $stmt->fetch();
+        $stmt->close();
+
+        // Increase bike quantity by 1 after cancelling the booking
+        if ($vehicleId) {
+            $stmt_update = $conn->prepare("UPDATE tblvehicles SET vehicle_quantity = vehicle_quantity + 1 WHERE id = ?");
+            $stmt_update->bind_param("i", $vehicleId);
+            $stmt_update->execute();
+            $stmt_update->close();
+        }
+    } 
+    // Update status in the database if it's not null
+    if ($status !== null) {
+        $update_sql = "UPDATE tblbooking SET Status = ? WHERE id = ?";
+        $stmt = $conn->prepare($update_sql);
+        $stmt->bind_param("ii", $status, $booking_id);
+        $stmt->execute();
+        $stmt->close();
     }
 
-    // Update status in the database (existing code)
-    $update_sql = "UPDATE tblbooking SET Status = ? WHERE id = ?";
-    $stmt = $conn->prepare($update_sql);
-    $stmt->bind_param("ii", $status, $booking_id);
-    $stmt->execute();
-    $stmt->close();
-
-    // Redirect to reload the page (existing code)
+    // Redirect to reload the page
     header("Location: manage-bookings.php");
     exit();
 }
@@ -179,9 +200,10 @@ $result = $conn->query($sql);
                     if (xhr.readyState == 4 && xhr.status == 200) {
                         alert(xhr.responseText);
                         window.location.reload();
+                        
                     }
                 };
-                xhr.send('action=deleteBooking&bookingId=' + bookingId);
+                xhr.send('action=delete&bookingId=' + bookingId);
             }
         }
 

@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ride Ready Rentals</title>
     <link rel="stylesheet" href="assets/css/style.css?v=3">
+    <link rel="shortcut icon" href="assets/img/icon.jpg" type="image/x-icon">
     <!-- Ensure script.js is included -->
     <script src="assets/js/script.js"></script>
 </head>

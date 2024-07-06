@@ -1,8 +1,5 @@
 let slideIndices = {};
 
-function plusSlides(n, id) {
-    showSlides(slideIndices[id] += n, id);
-}
 
 function showSlides(n, id) {
     let i;

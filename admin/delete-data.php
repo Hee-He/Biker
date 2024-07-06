@@ -6,7 +6,7 @@ if (isset($_POST['action'])) {
     if ($_POST['action'] === 'deleteVehicle' && isset($_POST['vehicleId'])) {
         $vehicleId = $_POST['vehicleId'];
         deleteVehicle($vehicleId); 
-    } elseif ($_POST['action'] === 'deleteBooking' && isset($_POST['bookingId'])) {
+    } elseif ($_POST['action'] === 'delete' && isset($_POST['bookingId'])) {
         $bookingId = $_POST['bookingId'];
         deleteBooking($bookingId); 
     } elseif ($_POST['action'] === 'deleteBrand' && isset($_POST['brandId'])) {
@@ -55,6 +55,22 @@ function deleteVehicle($vehicleId) {
 // Function to delete a booking by ID
 function deleteBooking($bookingId) {
     global $conn;
+
+    // Fetch vehicle ID associated with the booking
+    $stmt = $conn->prepare("SELECT VehicleId FROM tblbooking WHERE id = ?");
+    $stmt->bind_param("i", $bookingId);
+    $stmt->execute();
+    $stmt->bind_result($vehicleId);
+    $stmt->fetch();
+    $stmt->close();
+
+    // Increase bike quantity by 1 after deleting the booking
+    if ($vehicleId) {
+        $stmt_update = $conn->prepare("UPDATE tblvehicles SET vehicle_quantity = vehicle_quantity + 1 WHERE id = ?");
+        $stmt_update->bind_param("i", $vehicleId);
+        $stmt_update->execute();
+        $stmt_update->close();
+    }
 
     // Prepare SQL statement to delete booking
     $stmt = $conn->prepare("DELETE FROM tblbooking WHERE id = ?");

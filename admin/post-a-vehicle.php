@@ -10,7 +10,6 @@ if (!isset($_SESSION['admin'])) {
     exit();
 }
 
-// Include database connection and configuration
 require("includes/config.php");
 
 // Initialize error message

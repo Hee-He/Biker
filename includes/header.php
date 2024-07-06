@@ -7,7 +7,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 <nav class="navbar">
     <div class="container">
-        <a class="navbar-brand" href="index.php">Your Logo / Brand</a>
+        <a class="navbar-brand" href="index.php"><img src="assets/img/motocross.png" alt="" srcset="" height="45"></a>
         <ul class="navbar-nav">
             <li class="nav-item">
                 <a class="nav-link" href="index.php">Home</a>

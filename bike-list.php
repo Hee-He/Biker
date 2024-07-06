@@ -49,7 +49,7 @@ $conn->close();
 <html>
 <head>
     <title>Bike List</title>
-    <link rel="stylesheet" type="text/css" href="assets/css/style.css?v=2">
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css?v=7">
     <script src="assets/js/script.js"></script>
 </head>
 <body>
@@ -88,14 +88,11 @@ $conn->close();
                 if (!empty($image)) {
                     $hasImages = true;
                     echo "<div class='mySlides-$id fade'>";
-                    echo "<img src='assets/img/" . $image . "' alt='Bike Image' style='width:100%'>";
+                    echo "<img src='assets/img/" . $image . "' alt='Bike Image' style='width:50%; height: 40%;'>";
                     echo "</div>";
                 }
             }
-            if ($hasImages) {
-                echo "<a class='prev' onclick='plusSlides(-1, $id)'>&#10094;</a>";
-                echo "<a class='next' onclick='plusSlides(1, $id)'>&#10095;</a>";
-            }
+            
             echo "</div>";
 
             // View Details Link
@@ -184,3 +181,5 @@ $conn->close();
     </script>
 </body>
 </html>
+
+

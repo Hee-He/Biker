@@ -17,6 +17,17 @@ if (!$user_id) {
     exit();
 }
 
+// Initialize error message
+$error = "";
+
+// Check for success message in session and display it
+$success = "";
+if (isset($_SESSION['message'])) {
+    $success = $_SESSION['message'];
+    unset($_SESSION['message']);
+}
+
+
 // Fetch user details from database
 $sql = "SELECT ContactNo, FullName, citizen_img, license_img FROM `bikerental`.`tblusers` WHERE id=?";
 $stmt = $conn->prepare($sql);
@@ -88,10 +99,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update'])) {
 
         if ($stmt->execute()) {
             $_SESSION['username'] = $newName;
+            $_SESSION['message'] = "Profile Update successfully!";
             header("Location: profile.php");
             exit();
         } else {
-            echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+            $error =  "Failed To Update profile";
         }
     } else {
         echo "Prepare failed: (" . $conn->errno . ") " . $conn->error;
@@ -104,15 +116,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlentities($user); ?> Profile</title>
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/style.css?v=7">
     <style>
         .form-container {
             max-width: 600px;
-            margin: 50px auto;
-            padding: 20px;
             border: 1px solid #ccc;
-            border-radius: 10px;
-            background-color: #f9f9f9;
+            width: 60%;
+            margin: 10px 450px;
+            padding: 20px;
+            background-color: transparent;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            position: relative;
         }
         .form-container h2 {
             text-align: center;
@@ -148,6 +163,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update'])) {
 <body>
     <?php include("includes/header.php"); ?>
     <div class="form-container">
+    <div class="message-container">
+            <?php if (!empty($error)): ?>
+                <div class="error"><?php echo htmlspecialchars($error); ?></div>
+            <?php endif; ?>
+            <?php if (!empty($success)): ?>
+                <div class="success"><?php echo htmlspecialchars($success); ?></div>
+            <?php endif; ?>
+        </div>
         <h2>Update Profile</h2>
         <form action="" method="post" enctype="multipart/form-data">
             <label for="username">Full Name:</label>
@@ -158,14 +181,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update'])) {
 
             <?php if (empty($citizenImg)): ?>
                 <label for="citizen">Citizen Image:</label>
-                <input type="file" id="citizen" accept=".jpg,.png,.jpeg,.bmp,.webp" name="citizen"><br>
+                <input type="file" id="citizen" accept=".jpg,.png,.jpeg" name="citizen"><br>
             <?php else: ?>
                 <input type="hidden" name="citizen_current" value="<?php echo htmlentities($citizenImg); ?>">
             <?php endif; ?>
 
             <?php if (empty($licenseImg)): ?>
                 <label for="license">License Image:</label>
-                <input type="file" id="license" accept=".jpg,.png,.jpeg,.bmp,.webp" name="license"><br>
+                <input type="file" id="license" accept=".jpg,.png,.jpeg" name="license"><br>
             <?php else: ?>
                 <input type="hidden" name="license_current" value="<?php echo htmlentities($licenseImg); ?>">
             <?php endif; ?>
