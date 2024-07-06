@@ -32,6 +32,11 @@ body {
     text-decoration: none;
     position: absolute;
 }
+.navbar-brand img
+{
+    margin-left: -70px;
+    position: relative;
+}
 
 .navbar-nav {
     list-style-type: none;
@@ -132,7 +137,7 @@ body {
 /* Bike List Styles */
 .bike-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Adjust min-width of each column as needed */
+    grid-template-columns: repeat(auto-fill, minmax(400px, 2fr)); /* Adjust min-width of each column as needed */
     gap: 20px; /* Adjust gap between grid items */
     align-items: stretch; 
     margin: 20px; 
